@@ -1,6 +1,6 @@
 {
 	"name": "nodebb-plugin-profile-extends",
-	"version": "0.0.17",
+	"version": "0.0.1",
 	"description": "for user profile extends.",
 	"main": "index.js",
 	"repository": {
