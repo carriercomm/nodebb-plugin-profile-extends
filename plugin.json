@@ -1,0 +1,23 @@
+{
+	"id": "nodebb-plugin-profile-extends",
+	"name": "Profile Extends",
+	"description": "for user profile extends",
+	"url": "https://github.com/erlgo/nodebb-plugin-profile-extends",
+	"library": "./index.js",
+	"less": [
+		"static/style.less"
+	],
+	"scripts": [
+		"static/lib/loader.js",
+	],
+	"staticDirs": {
+		"static": "./static"
+	},
+	"templates": "static/templates",
+	"languages": "static/language",
+	"hooks": [{
+		"hook": "static:app.load",
+		"method": "init"
+	}],
+	"compatibility": "~0.6.0"
+}

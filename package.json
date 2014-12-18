@@ -1,0 +1,28 @@
+{
+	"name": "nodebb-plugin-profile-extends",
+	"version": "0.0.17",
+	"description": "for user profile extends.",
+	"main": "index.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/erlgo/nodebb-plugin-profile-extends"
+	},
+	"keywords": [
+		"nodebb",
+		"plugin",
+		"profile",
+		"extends"
+	],
+	"author": {
+		"name": "erlgo",
+		"email": "erlgo@ipc6.com"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/erlgo/nodebb-plugin-profile-extends/issues"
+	},
+	"nbbpm": {
+		"compatibility": "~0.6.0"
+	},
+	"readmeFilename": "README.md"
+}
