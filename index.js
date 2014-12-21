@@ -26,8 +26,20 @@ var socketHander = {};
 		admin.register.remove(data, callback);
 	};
 
+	socketAdminHander.profile.get = function (socket, data, callback) {
+		admin.profile.get(callback);
+	};
+	socketAdminHander.profile.add = function (socket, data, callback) {
+		if (!data) return callback(new Error('data was null.'));
+		admin.profile.add(data, callback);
+	};
+	socketAdminHander.profile.remove = function (socket, data, callback) {
+		if (!data) return callback(new Error('data was null.'));
+		admin.profile.remove(data, callback);
+	};
+
 	socketHander.register = {};
-	socketHander.extends = {};
+	socketHander.profile = {};
 
 	socketHander.register.save = function(socket,data,callback){
 		if (!socket.uid) {
@@ -54,7 +66,7 @@ var socketHander = {};
 			admin.profile.saveRegister(data.uid,data,callback);
 		});
 	};
-	socketHander.extends.save = function(socket,data,callback){
+	socketHander.profile.save = function(socket,data,callback){
 		if (!socket.uid) {
 			return callback('[[error:invalid-uid]]');
 		}
@@ -113,29 +125,45 @@ var socketHander = {};
 				if (!userData) {
 					return nodebb.helpers.notFound(req, res);
 				}
+				userData.infocomplete = 0;
+				userData.infototal = 1;
 				var registerfields = [];
 				admin.register.get(function (err, results) {
+					userData.infototal += results.length;
 					for (var i = 0; i < results.length; i++) {
 						var formSet = 'register-' + results[i].fieldName;
 						var set = {};
 						set.type = results[i].fieldName;
 						set.name = formSet;
-						set.value = userData[formSet];
+						set.value = userData[formSet] || null;
 						registerfields.push(set);
+						if(userData[formSet]){
+							userData.infocomplete ++;
+						}
 					}
 					userData.registerfields = registerfields;
 					next(null,userData);
 				});
 			},
 			function(data,next){
-				//TODO add extends fields
-				next(null,null);
-			},
-			function(data,next){
-				//TODO add fields type config
-
-				next(null,null);
-			},
+				var profilefields = [];
+				admin.profile.get(function (err, results) {
+					userData.infototal += results.length;
+					for (var i = 0; i < results.length; i++) {
+						var formSet = 'profile-' + results[i].fieldName;
+						var set = {};
+						set.type = results[i].fieldName;
+						set.name = formSet;
+						set.value = userData[formSet] || null;
+						profilefields.push(set);
+						if(userData[formSet]){
+							userData.infocomplete ++;
+						}
+					}
+					userData.profilefields = profilefields;
+					next(null,userData);
+				});
+			}
 		], function (err, data) {
 			if (err) {
 				return next(err);

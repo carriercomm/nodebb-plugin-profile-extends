@@ -1,16 +1,12 @@
 "use strict";
 define('admin/plugins/profileext', ['forum/infinitescroll', 'admin/modules/selectable'], function (infinitescroll, selectable) {
- var serverid = 'nodebb-plugin-profile-extends';
+	var serverid = 'nodebb-plugin-profile-extends';
 	var profile = {},
- validationError,
+		validationError,
 		successIcon = '<i class="fa fa-check"></i>';
 	profile.init = function () {
-		handleRegister();
+		handlePanel();
 	};
-
- function handleRegisterField(field,callback){
-
- }
 
 	function handleInputEmpty(targetInputs) {
 		var invalid = false;
@@ -20,121 +16,134 @@ define('admin/plugins/profileext', ['forum/infinitescroll', 'admin/modules/selec
 			var notifyElt = inputs.parent().find('span#' + inputs.attr('id') + '-notify');
 			if (inputs.val() == '') {
 				if (notifyElt.length) {
-     showError(notifyElt,'[[error:invalid-data]]');
-				}else{
-     inputs.removeClass('alert-success')
-     .addClass('alert-danger');
-    }
-    invalid = true;
+					showError(notifyElt, '[[error:invalid-data]]');
+				} else {
+					inputs.removeClass('alert-success')
+						.addClass('alert-danger');
+				}
+				invalid = true;
 			} else {
-    if (notifyElt.length) {
-     showSuccess(notifyElt,successIcon);
-				}else{
-     inputs.removeClass('alert-danger')
-     .addClass('alert-success');
-    }
+				if (notifyElt.length) {
+					showSuccess(notifyElt, successIcon);
+				} else {
+					inputs.removeClass('alert-danger')
+						.addClass('alert-success');
+				}
 			}
 		}
 		return !invalid;
 	}
 
-	function handleRegister() {
+	function handlePanel() {
 		var curTempalte = null;
-  var rootElt = $('.register');
-		var validateBaseFunc = function () {
-   validationError = false;
-			return handleInputEmpty($('.register input[type="text"]:visible'))
+		var validateBaseFunc = function (targetName) {
+			validationError = false;
+			return handleInputEmpty($('.'+targetName+' input[type="text"]:visible'))
 		};
-  var validateOptFunc = function(){
-   validationError = false;
-   return handleInputEmpty($('.register.template-group input[type="text"]:visible'))
-  }
+		var validateOptFunc = function (targetName) {
+			validationError = false;
+			return handleInputEmpty($('.'+targetName+'.template-group input[type="text"]:visible'))
+		}
 
-  $('.register-remove').on('click',function(ev){
-   var nameset = $(this).attr('data-name');
-   bootbox.confirm('Do you want to delete the register field named [ '+nameset+' ]?', function (confirm) {
-    if (!confirm) {
-     return;
-    }
-    socket.emit('admin.plugins.' + serverid + '.register.remove',nameset,function(err,result){
-     if (err) {
-      return app.alertError(err.message);
-     }
-     app.alert({
-      title: 'Register Field Removed',
-      message: 'Field was successfully removed.',
-      type: 'success',
-      timeout: 2000
-     });
-     ajaxify.go('admin/plugins/profileext');
-    });
-   });
-   return false;
-  });
+		$('.field-remove').on('click', function (ev) {
+			var $this = $(this);
+			var pack = $this.attr('panel');
+			var nameset = $this.attr('data-name');
+			bootbox.confirm('Do you want to delete the ' + pack + ' field named [ ' + nameset + ' ]?', function (confirm) {
+				if (!confirm) {
+					return;
+				}
+				socket.emit('admin.plugins.' + serverid + '.' + pack + '.remove', nameset, function (err, result) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alert({
+						title: pack + ' Field Removed',
+						message: 'Field was successfully removed.',
+						type: 'success',
+						timeout: 2000
+					});
+					ajaxify.go('admin/plugins/profileext');
+				});
+			});
+			return false;
+		});
 
-  $('.register input[type="text"]:visible').on('blur',function(){
-   if(handleInputEmpty([$(this)])){
-    if($(this).attr('id') == 'fieldName'){
-     //to server valid
-    }
-   }
-  });
+		$('input[type="text"]:visible').on('blur', function () {
+			if (handleInputEmpty([$(this)])) {
+				if ($(this).attr('id') == 'fieldName') {
+					//to server valid
+				}
+			}
+		});
 
-		$('.register #clearbtn').on('click', function (ev) {
-   rootElt.find('[type="text"]:visible').val('');
-   rootElt.find('input[name="fieldType"]').val(['input']);
-   rootElt.find('[type="submit"]').removeClass('disabled');
-   //TODO clean template options
-  });
+		$('.clearbtn').on('click', function (ev) {
+      var targetName = 'div.' + $(this).attr('panel');
+      var panel = $( targetName );
+      console.log(panel)
+      panel.find('[type="text"]:visible').val('');
+      panel.find('input[name="fieldType"]').val(['input']);
+      panel.find('[type="submit"]').removeClass('disabled');
 
-		$('.register [type="submit"]').on('click', function (ev) {
-   if(validateBaseFunc() && validateOptFunc()){
-    var cmtdata = {};
-    var opts = [];
-    cmtdata.fieldName = rootElt.find('#fieldName').val();
-    cmtdata.fieldLabel = rootElt.find('#fieldLabel').val();
-    cmtdata.fieldType = rootElt.find('input[name="fieldType"]:checked').val();
-    cmtdata.opts = opts;
-    rootElt.find('.template-group input[type="text"]:visible').each(function(idx,elt){
-      var didx = $(elt).attr('data-index');
-      var opt = opts[didx] ? opts[didx] : opts[didx] = {};
-      opt[$(elt).attr('name').replace('template-options-','')] = $(elt).val();
-    });
-    //send to server
-    $(this).addClass('disabled');
-    var holdthis = this;
-    socket.emit('admin.plugins.' + serverid + '.register.add',cmtdata,function(err,result){
-     $(holdthis).removeClass('disabled');
-     if (err) {
-      return app.alertError(err.message);
-     }
-     app.alert({
-      title: 'Register Field Added',
-      message: 'Field was successfully added.',
-      type: 'success',
-      timeout: 2000
-     });
-     ajaxify.go('admin/plugins/profileext');
-    });
-   }
-  });
+      handleInputEmpty($(targetName + ' input[type="text"]:visible') );
+			//TODO clean template options
+		});
 
-		$('.register #template-count').on('change', function (ev) {
-			var line_count = $(this).val();
-			var target_group = $($('.register .template-group'));
+		$('[type="submit"]').on('click', function (ev) {
+      var targetName = $(this).attr('panel');
+      var panel = $( 'div.' + targetName );
+      if (validateBaseFunc(targetName) && validateOptFunc(targetName)) {
+				var cmtdata = {};
+				var opts = [];
+				cmtdata.fieldName = panel.find('#fieldName').val();
+				cmtdata.fieldLabel = panel.find('#fieldLabel').val();
+				cmtdata.fieldType = panel.find('input.fieldType:checked').val();
+				cmtdata.opts = opts;
+        panel.find('.template-group input[type="text"]:visible').each(function (idx, elt) {
+					var didx = $(elt).attr('data-index');
+					var opt = opts[didx] ? opts[didx] : opts[didx] = {};
+					opt[$(elt).attr('name').replace('template-options-', '')] = $(elt).val();
+				});
+				//send to server
+				$(this).addClass('disabled');
+				var holdthis = this;
+				socket.emit('admin.plugins.' + serverid + '.'+targetName+'.add', cmtdata, function (err, result) {
+					$(holdthis).removeClass('disabled');
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alert({
+						title: targetName + ' Field Added',
+						message: 'Field was successfully added.',
+						type: 'success',
+						timeout: 2000
+					});
+					ajaxify.go('admin/plugins/profileext');
+				});
+			}
+		});
+
+		$('.template-count').on('change', function (ev) {
+      var targetName = $(this).attr('panel');
+      var panel = $( 'div.' + targetName );
+      var line_count = $(this).val();
+			var target_group = panel.find('.template-group');
 			genTemplateOptions(target_group, line_count, curTempalte);
 		});
 
-		$('.register .input-group [name="fieldType"]').on('click', function (ev) {
-			var genlist = $(this).attr('genlist');
+		$('.input-group .fieldType').on('click', function (ev) {
+      var targetName = $(this).attr('panel');
+      var panel = $( 'div.' + targetName );
+      var genlist = $(this).attr('genlist');
 			curTempalte = $('div.template-input-row').html();
-			$('.register .template-group').empty();
+			$('.'+targetName+' .template-group').empty();
 			if (genlist == 'true') {
-				$('.register #template-count').val(1);
-				$('.register div.template-form').removeClass('hidden');
-    genTemplateOptions($('.register .template-group'), 1, curTempalte);
+				$('.'+targetName+' .template-count').val(1);
+				$('.'+targetName+' div.template-form').removeClass('hidden');
+				$('.'+targetName+' .field-type-name').html($(this).val());
+				genTemplateOptions($('.'+targetName+' .template-group'), 1, curTempalte);
 			} else {
-				$('.register div.template-form').addClass('hidden');
+				$('.'+targetName+' div.template-form').addClass('hidden');
 			}
 		});
 	}
@@ -158,33 +167,33 @@ define('admin/plugins/profileext', ['forum/infinitescroll', 'admin/modules/selec
 			var inputvalue = $(rownode).find('input.template-value');
 			inputlabel.attr('id', 'template-options-label' + i);
 			inputlabel.attr('name', 'template-options-label');
-   inputlabel.attr('data-index', i);
-   inputvalue.attr('id', 'template-options-value' + i);
-   inputvalue.attr('name', 'template-options-value');
-   inputvalue.attr('data-index', i);
-  }
+			inputlabel.attr('data-index', i);
+			inputvalue.attr('id', 'template-options-value' + i);
+			inputvalue.attr('name', 'template-options-value');
+			inputvalue.attr('data-index', i);
+		}
 	}
 
- function showError(element, msg) {
-  translator.translate(msg, function(msg) {
-   element.html(msg);
-   element.parent()
-   .removeClass('alert-success')
-   .addClass('alert-danger');
-   element.show();
-  });
-  validationError = true;
- }
+	function showError(element, msg) {
+		translator.translate(msg, function (msg) {
+			element.html(msg);
+			element.parent()
+				.removeClass('alert-success')
+				.addClass('alert-danger');
+			element.show();
+		});
+		validationError = true;
+	}
 
- function showSuccess(element, msg) {
-  translator.translate(msg, function(msg) {
-   element.html(msg);
-   element.parent()
-   .removeClass('alert-danger')
-   .addClass('alert-success');
-   element.show();
-  });
- }
+	function showSuccess(element, msg) {
+		translator.translate(msg, function (msg) {
+			element.html(msg);
+			element.parent()
+				.removeClass('alert-danger')
+				.addClass('alert-success');
+			element.show();
+		});
+	}
 
 	return profile;
 });

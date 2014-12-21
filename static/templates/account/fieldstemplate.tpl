@@ -1,5 +1,8 @@
 <div id="fields-template-input">
-    <input class="form-control" type="text" id="{name}" name="{name}" data-property="{name}" placeholder="{label}">
+  <input class="form-control" type="text" id="{name}" name="{name}" data-property="{name}" placeholder="{label}">
+</div>
+<div id="fields-template-number">
+  <input class="form-control number" type="text" id="{name}" name="{name}" data-property="{name}" placeholder="{label}">
 </div>
 <div id="fields-template-radio">
   <div class="radio">
