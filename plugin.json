@@ -1,14 +1,12 @@
 {
 	"id": "nodebb-plugin-profile-extends",
 	"name": "Profile Extends",
-	"description": "for user profile extends",
+	"description": "For user profile extends, add fields to register regFormEntry, create new profie extends view.",
 	"url": "https://github.com/erlgo/nodebb-plugin-profile-extends",
 	"library": "./index.js",
-	"less": [
-		"static/style.less"
-	],
 	"scripts": [
-		"static/lib/loader.js",
+		"static/lib/account/",
+		"static/lib/loader.js"
 	],
 	"staticDirs": {
 		"static": "./static"
@@ -18,6 +16,33 @@
 	"hooks": [{
 		"hook": "static:app.load",
 		"method": "init"
+	}, {
+		"hook": "filter:user.profileLinks",
+		"method": "profileLinks"
+	}, {
+		"hook": "filter:register.build",
+		"method": "registerBuild"
+	}, {
+		"hook": "filter:user.custom_fields",
+		"method": "registerFields"
+	}, {
+		"hook": "filter:posts.custom_profile_info",
+		"method": "postsProfileFields"
+	}, {
+		"hook": "filter:templates.get_config",
+		"method": "templateMapping"
+	}, {
+		"hook": "filter:user.settings",
+		"method": "userSettings"
+	}, {
+		"hook": "filter:user.getSettings",
+		"method": "userGetSettings"
+	}, {
+		"hook": "action:user.saveSettings",
+		"method": "userSaveSettings"
+	}, {
+		"hook": "filter:admin.header.build",
+		"method": "buildAdminHeader"
 	}],
 	"compatibility": "~0.6.0"
 }

@@ -1,0 +1,15 @@
+[{
+	"label": "Input",
+	"type": "input",
+	"template": "<input type='input'/>"
+}, {
+	"label": "Radio Group",
+	"type": "radio",
+	"genlist": true,
+	"template": "<div class='input-group input-group-for-{fieldName}'><!-- BEGIN opts --><div class='radio'><label><input type='radio' name='{fieldName}' value='{opts.value}' <!-- IF @first -->checked<!--ENDIF @first -->/><strong>{opts.label}</strong> </label></div><!-- END opts --></div>"
+}, {
+	"label": "Checkbox Group",
+	"type": "checkbox",
+	"genlist": true,
+	"template": "<div class='input-group input-group-for-{fieldName}'><!-- BEGIN opts --><div class='checkbox'><label><input type='checkbox' name='{fieldName}' value='{opts.value}' <!-- IF opts.selected -->checked<!--ENDIF opts.selected -->/><strong>{opts.label}</strong> </label></div><!-- END opts --></div>"
+	}]

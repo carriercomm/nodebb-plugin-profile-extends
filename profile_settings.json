@@ -1,0 +1,10 @@
+[
+  {
+    "name" : "publicRegisterFields",
+    "info" : "[[profileext:public]]"
+  },
+  {
+    "name" : "publicExtendsFields",
+    "info" : "[[profileext:extends.public]]"
+  }
+]
