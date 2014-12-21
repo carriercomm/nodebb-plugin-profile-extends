@@ -13,6 +13,12 @@
     </div>
     <div class="panel-body">
 
+      <!-- IF config.requireEmailConfirmation -->
+      <div class="well">
+        <h4>[[user:email]] {email}      <!-- IF email -->      <!-- IF isSelf -->      <a id="confirm-email" href="#" class="pull-right btn btn-warning <!-- IF email:confirmed -->hide<!-- ENDIF email:confirmed -->">[[user:confirm_email]]</a>      <!-- ENDIF isSelf -->      <!-- ENDIF email -->    </h4>
+      </div>
+    <!-- ENDIF config.requireEmailConfirmation -->
+
 
       <!-- IF registerfields.length -->
       <h4>[[profileext:title]]

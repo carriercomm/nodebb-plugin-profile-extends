@@ -2,6 +2,7 @@ var nodebb = require('./nodebb'),
 	SocketAdmin = nodebb.SocketAdmin,
 	SocketPlugins = nodebb.SocketPlugins,
 	User = nodebb.User,
+	meta = nodebb.meta,
 	templates = nodebb.templates,
 	async = nodebb.async;
 var fs = require('fs');
@@ -126,7 +127,7 @@ var socketHander = {};
 					return nodebb.helpers.notFound(req, res);
 				}
 				userData.infocomplete = 0;
-				userData.infototal = 1;
+				userData.infototal = 0;
 				var registerfields = [];
 				admin.register.get(function (err, results) {
 					userData.infototal += results.length;
@@ -168,7 +169,13 @@ var socketHander = {};
 			if (err) {
 				return next(err);
 			}
-			// console.log(userData);
+			console.log(userData)
+			if(parseInt(meta.config.requireEmailConfirmation,10) === 1){
+				userData.infototal ++;
+				if(userData['email:confirmed']){
+					userData.infocomplete ++;
+				}
+			}
 			res.render('account/profileext', userData);
 		});
 
@@ -267,7 +274,6 @@ var socketHander = {};
 				var formSet = createFormEntry(results[i]);
 				args.templateData.regFormEntry.push(formSet);
 			}
-			// console.log(args.templateData);
 			callback(null, args);
 		});
 	};
