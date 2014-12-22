@@ -169,7 +169,6 @@ var socketHander = {};
 			if (err) {
 				return next(err);
 			}
-			console.log(userData)
 			if(parseInt(meta.config.requireEmailConfirmation,10) === 1){
 				userData.infototal ++;
 				if(userData['email:confirmed']){

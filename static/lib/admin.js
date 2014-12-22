@@ -80,7 +80,6 @@ define('admin/plugins/profileext', ['forum/infinitescroll', 'admin/modules/selec
 		$('.clearbtn').on('click', function (ev) {
       var targetName = 'div.' + $(this).attr('panel');
       var panel = $( targetName );
-      console.log(panel)
       panel.find('[type="text"]:visible').val('');
       panel.find('input[name="fieldType"]').val(['input']);
       panel.find('[type="submit"]').removeClass('disabled');
