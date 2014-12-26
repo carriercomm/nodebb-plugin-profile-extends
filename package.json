@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-profile-extends",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "For user profile extends, add fields to register regFormEntry, create new profie extends view.",
   "main": "index.js",
   "repository": {
